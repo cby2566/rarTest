@@ -97,4 +97,14 @@ function text6(){
     }
     cock().next()
 }
-text6()
+function text7(){
+    function* gen(x){
+        let y = yield x + 2//5
+        console.log(y)
+        return y
+    }
+    let g = gen(1)
+    console.log(g.next())
+    console.log(g.next(5))
+}
+text7()
