@@ -157,5 +157,3 @@ function text4(){
         console.log(x)
     }
 }
-
-text4()

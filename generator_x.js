@@ -41,4 +41,60 @@ function text2(){
         console.log(n)
     }
 }
-text2()
+//通过Generator给原生js对象加额外接口
+function text3(){
+    function* objctEntries(obj){
+        let propKeys = Reflect.ownKeys(obj);
+        for(let porpKey of propKeys){
+            yield [porpKey,obj[porpKey]];  
+        }
+    }
+    let jane ={ddd:'123',bbb:'789'}
+    for (let [k,v] of objctEntries(jane)){
+        console.log(`${k}:${v}`)
+    }
+}
+//通过Generator给原生js对象加额外接口，直接给他symbol.iterator方法
+function text4(){
+    function* objctEntries(){
+        let propKeys = Object.keys(this);
+        for(let porpKey of propKeys){
+            yield [porpKey,this[porpKey]];
+        }
+    }
+    let jane ={ddd:'123',bbb:'789'}
+    jane[Symbol.iterator] = objctEntries;
+
+    for (let [k,v] of jane){
+        console.log(`${k}:${v}`)
+    }
+}
+//当Generator函数被嵌套时
+function text5(){
+    function* foo(){
+        yield 'a'
+        yield 'b'
+    }
+    function* bar(){
+        yield 'x'
+        yield foo()
+        yield* foo()
+        yield 'y'
+    }
+    for (let v of bar()){
+        console.log(v)
+    }
+}
+//运行一次就改
+function text6(){
+    var cock = function* (){
+        while(true){
+            console.log('Tick!')
+            yield;
+            console.log('Tock!')
+            yield;
+        }
+    }
+    cock().next()
+}
+text6()
