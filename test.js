@@ -5,8 +5,9 @@ const fs = require('fs');
 //   console.log(data)
 // })
 fs.opendir('./',(err,dir)=>{
-  console.log(dir)
+  
   // console.log(dir.read())
-  console.log(dir[Symbol.asyncIterator]())
+  //console.log(dir[Symbol.asyncIterator]())
   let iter = dir[Symbol.asyncIterator]();
+  console.log(iter)
 })
