@@ -89,25 +89,49 @@ function text6(){
 // fs.readdir('./',{withFileTypes:true},(err,files)=>{
 //   console.log(files)
 
-// })
-let arr = []
-function rName(url){
-    fs.readdir(url,{withFileTypes:true},(err,files)=>{
-      for(let item of files){
-        if(item.isDirectory()){
-          if(item.name == '.git') continue;
-          // console.log(item.name,1)
-          arr.push(item.name+'-')
-          rName(`${url}/${item.name}`)
-        }else{
-          // console.log(item.name,2)
-          arr.push(item.name)
+// })'
+function text7(){
+  let arr = []
+  function rName(url){
+      fs.readdir(url,{withFileTypes:true},(err,files)=>{
+        for(let item of files){
+          if(item.isDirectory()){
+            if(item.name == '.git') continue;
+            // console.log(item.name,1)
+            arr.push(item.name+'-')
+            rName(`${url}/${item.name}`)
+          }else{
+            // console.log(item.name,2)
+            arr.push(item.name)
+          }
         }
-      }
-    })
-
+      })
+  
+  }
+  rName('./')
+  setTimeout(()=>{
+    console.log(arr)
+  },1000)
 }
-rName('./')
-setTimeout(()=>{
-  console.log(arr)
-},1000)
+
+//async改写定时器
+function text8(){
+  function timeOut(ms){
+    return new Promise((resolve)=>{
+      setTimeout(()=>{
+        console.log(ms)
+        resolve();
+      },ms)
+    })
+  }
+  async function point(data,ms){
+    for(let i =0;i<3;i++){
+      await timeOut(ms+i);
+      console.log('循环中',i)
+    }
+    console.log(data)
+    // return 'holl'
+  }
+  point(88888,1000)
+}
+
