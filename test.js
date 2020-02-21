@@ -82,7 +82,7 @@ function text6(){
 //let fsSreamRead = fs.createReadStream('rbq.rbq');
 // console.log(fsSreamRead)
 
-//逐行读写要单独安装模块
+//逐行读写要单独安装模块realine
 
 //另，读取文件名
 // let fileName = fs.readdirSync('./',{withFileTypes:true})
