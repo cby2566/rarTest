@@ -135,3 +135,38 @@ function text8(){
   point(88888,1000)
 }
 
+// let arr = []
+function text9(){
+  //想自己写，用promise递归，显示出树状结果图，失败了
+  function rName(url){
+    return new Promise((resolve)=>{
+      fs.readdir(url,{withFileTypes:true},(err,files)=>{
+        resolve();
+        callback(files,url)
+      })
+    })
+  }
+  
+  function callback(files,url){
+    for(let item of files){
+      if(item.isDirectory()){
+        if(item.name == '.git') continue;
+        console.log(item.name,1)
+        // arr.push(item.name+'-')
+        rName(`${url}/${item.name}`)
+      }else{
+        console.log(item.name,2)
+        // arr.push(item.name)
+      }
+    }
+  }
+    
+  let pk = new Promise((resolve)=>{})
+  async function play(){
+    console.log('start')
+    await rName('./');
+    console.log('end')
+  }
+  play()
+}
+
