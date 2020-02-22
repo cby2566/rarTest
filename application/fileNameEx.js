@@ -1,5 +1,6 @@
 const fs = require('fs');
 const fsPromise = fs.promises;
+const AdmZip = require('adm-zip');
 
 function readAllFileName(url){
    return fsPromise.readdir(url)
@@ -56,4 +57,15 @@ async function start(){
     //交集
     //let intersection = arr1.filter( v => arr2.includes(v))
 }
-start()
+
+readAllFileName('../src').then((data)=>{
+    let rarArr = data.filter((item)=>{
+        return item.includes('.rar')
+    })
+    // console.log('./src/gRc01$froD12Ge1Qds23Ta.zip')
+    let rarEx = new AdmZip('./a2.zip');
+    console.log(rarEx.getEntries())
+    // rarEx.getEntries().forEach((item)=>{
+    //     console.log(item.rawEntryName().toString())
+    // })
+})
