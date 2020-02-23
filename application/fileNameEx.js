@@ -72,6 +72,7 @@ async function start(){
     //     console.log(item.rawEntryName().toString())
     // })
 })*/
+var arr7 = []
 readAllFileName('../src').then((data)=>{
     let txtArr = data.filter((item)=>{
         return item.includes('.txt')
@@ -80,6 +81,7 @@ readAllFileName('../src').then((data)=>{
     for(let i of txtArr){
         arr.push(fsPromise.readFile('../src/'+ i))
     }
+    arr7 = txtArr
     return Promise.all(arr)
 }).then((data)=>{
     // console.log(data)
@@ -92,6 +94,16 @@ readAllFileName('../src').then((data)=>{
     }
     //TODO lodash
     // console.log(...[allCloudUrl])
+    console.log(allCloudUrl.length)
+    console.log(arr7,arr7.length)
+    for(let index = 0;index<allCloudUrl.length;index++){
+        for(let j of allCloudUrl[index]){
+            if(j.includes('m6wm') || j.includes('qqxp')){
+                console.log('err:',arr7[index])
+            }
+        }
+    }
+    return;
     let fsStreamWrite = fs.createWriteStream('./rbq.rbq')
     for(let i of allCloudUrl){
         for(let j of i){
