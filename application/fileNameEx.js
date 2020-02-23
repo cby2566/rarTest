@@ -1,7 +1,7 @@
 const fs = require('fs');
 const fsPromise = fs.promises;
 const exec = require('child_process').exec;
-
+const iconv = require('iconv-lite')
 function readAllFileName(url){
    return fsPromise.readdir(url)
     .then((data)=>{
@@ -76,9 +76,38 @@ readAllFileName('../src').then((data)=>{
     let txtArr = data.filter((item)=>{
         return item.includes('.txt')
     })
-    return fsPromise.readFile('../src/'+txtArr[0])
+    let arr = []
+    for(let i of txtArr){
+        arr.push(fsPromise.readFile('../src/'+ i))
+    }
+    return Promise.all(arr)
 }).then((data)=>{
-    console.log(data)
+    // console.log(data)
+    // let moveCloud = new Map();
+    let allReg = /链接：(.+)/g
+    let allCloudUrl = []
+    for(let i of data){
+        let text = iconv.decode(i,'gb2312')
+        allCloudUrl.push(text.match(allReg)) 
+    }
+    //TODO lodash
+    // console.log(...[allCloudUrl])
+    let fsStreamWrite = fs.createWriteStream('./rbq.rbq')
+    for(let i of allCloudUrl){
+        for(let j of i){
+            fsStreamWrite.write(j+'\n')
+        }
+    }
+    fsStreamWrite.end()
+    // let reg = /链接：(.+?) /g
+    // let reg2 = /提取码：(.+)/g 
+    // let allReg = /链接：(.+)/g
+
+    // let text = iconv.decode(data,'gb2312')
+
+    // let urlArr = text.match(reg)
+    // let pwdArr = text.match(reg2)
+    // console.log(text.match(allReg))
 })
 
 function execCmd(cmdStr,next){
