@@ -1,6 +1,6 @@
 const fs = require('fs');
 const fsPromise = fs.promises;
-const AdmZip = require('adm-zip');
+const exec = require('child_process').exec;
 
 function readAllFileName(url){
    return fsPromise.readdir(url)
@@ -58,14 +58,35 @@ async function start(){
     //let intersection = arr1.filter( v => arr2.includes(v))
 }
 
-readAllFileName('../src').then((data)=>{
+/*readAllFileName('../src').then((data)=>{
     let rarArr = data.filter((item)=>{
         return item.includes('.rar')
     })
+
+    console.log(rarArr)
+    for(let i of rarArr){
+        unRAR('../src/'+i,'../src/')
+    }
     // console.log('./src/gRc01$froD12Ge1Qds23Ta.zip')
-    let rarEx = new AdmZip('./a2.zip');
-    console.log(rarEx.getEntries())
     // rarEx.getEntries().forEach((item)=>{
     //     console.log(item.rawEntryName().toString())
     // })
+})*/
+readAllFileName('../src').then((data)=>{
+    let txtArr = data.filter((item)=>{
+        return item.includes('.txt')
+    })
+    return fsPromise.readFile('../src/'+txtArr[0])
+}).then((data)=>{
+    console.log(data)
 })
+
+function execCmd(cmdStr,next){
+    exec(cmdStr,function(err,stdout,stderr){
+        console.log('运行完成')
+    });
+}
+function unRAR(url,outUrl) {
+    let dataPass = `start winrar e  ${url} ${outUrl}`
+    execCmd(dataPass)
+}
