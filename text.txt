@@ -1,0 +1,2 @@
+ExperimentalWarning: The fs.promises API is experimental
+当前版本的node没用找到这个方法
