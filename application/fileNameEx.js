@@ -1,7 +1,10 @@
 const fs = require('fs');
 const fsPromise = fs.promises;
-const exec = require('child_process').exec;
+// const exec = require('child_process').exec;
 const iconv = require('iconv-lite')
+
+const fileTo = require('./ftlToRAR')
+
 function readAllFileName(url){
    return fsPromise.readdir(url)
     .then((data)=>{
@@ -72,62 +75,58 @@ async function start(){
     //     console.log(item.rawEntryName().toString())
     // })
 })*/
-var arr7 = []
-readAllFileName('../src').then((data)=>{
-    let txtArr = data.filter((item)=>{
-        return item.includes('.txt')
-    })
-    let arr = []
-    for(let i of txtArr){
-        arr.push(fsPromise.readFile('../src/'+ i))
-    }
-    arr7 = txtArr
-    return Promise.all(arr)
-}).then((data)=>{
-    // console.log(data)
-    // let moveCloud = new Map();
-    let allReg = /链接：(.+)/g
-    let allCloudUrl = []
-    for(let i of data){
-        let text = iconv.decode(i,'gb2312')
-        allCloudUrl.push(text.match(allReg)) 
-    }
-    //TODO lodash
-    // console.log(...[allCloudUrl])
-    console.log(allCloudUrl.length)
-    console.log(arr7,arr7.length)
-    for(let index = 0;index<allCloudUrl.length;index++){
-        for(let j of allCloudUrl[index]){
-            if(j.includes('m6wm') || j.includes('qqxp')){
-                console.log('err:',arr7[index])
+function texts() {
+    //用于解压飞猫网盘的那些链接，然后导出
+    var arr7 = []
+    readAllFileName('../src').then((data)=>{
+        let txtArr = data.filter((item)=>{
+            return item.includes('.txt')
+        })
+        let arr = []
+        for(let i of txtArr){
+            arr.push(fsPromise.readFile('../src/'+ i))
+        }
+        arr7 = txtArr
+        return Promise.all(arr)
+    }).then((data)=>{
+        // console.log(data)
+        // let moveCloud = new Map();
+        let allReg = /链接：(.+)/g
+        let allCloudUrl = []
+        for(let i of data){
+            let text = iconv.decode(i,'gb2312')
+            allCloudUrl.push(text.match(allReg)) 
+        }
+        //TODO lodash
+        // console.log(...[allCloudUrl])
+        console.log(allCloudUrl.length)
+        console.log(arr7,arr7.length)
+        for(let index = 0;index<allCloudUrl.length;index++){
+            for(let j of allCloudUrl[index]){
+                if(j.includes('m6wm') || j.includes('qqxp')){
+                    console.log('err:',arr7[index])
+                }
             }
         }
-    }
-    return;
-    let fsStreamWrite = fs.createWriteStream('./rbq.rbq')
-    for(let i of allCloudUrl){
-        for(let j of i){
-            fsStreamWrite.write(j+'\n')
+        return;
+        let fsStreamWrite = fs.createWriteStream('./rbq.rbq')
+        for(let i of allCloudUrl){
+            for(let j of i){
+                fsStreamWrite.write(j+'\n')
+            }
         }
-    }
-    fsStreamWrite.end()
-    // let reg = /链接：(.+?) /g
-    // let reg2 = /提取码：(.+)/g 
-    // let allReg = /链接：(.+)/g
+        fsStreamWrite.end()
+        // let reg = /链接：(.+?) /g
+        // let reg2 = /提取码：(.+)/g 
+        // let allReg = /链接：(.+)/g
 
-    // let text = iconv.decode(data,'gb2312')
+        // let text = iconv.decode(data,'gb2312')
 
-    // let urlArr = text.match(reg)
-    // let pwdArr = text.match(reg2)
-    // console.log(text.match(allReg))
-})
+        // let urlArr = text.match(reg)
+        // let pwdArr = text.match(reg2)
+        // console.log(text.match(allReg))
+    })
 
-function execCmd(cmdStr,next){
-    exec(cmdStr,function(err,stdout,stderr){
-        console.log('运行完成')
-    });
+    
 }
-function unRAR(url,outUrl) {
-    let dataPass = `start winrar e  ${url} ${outUrl}`
-    execCmd(dataPass)
-}
+
