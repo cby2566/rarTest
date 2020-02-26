@@ -75,6 +75,7 @@ async function start(){
     //     console.log(item.rawEntryName().toString())
     // })
 })*/
+///正式操作-》
 function texts() {
     //用于解压飞猫网盘的那些链接，然后导出
     var arr7 = []
@@ -126,7 +127,48 @@ function texts() {
         // let pwdArr = text.match(reg2)
         // console.log(text.match(allReg))
     })
-
-    
 }
+console.log('write')
+// let job = new Map()
+// job.set('a','123')
+// job.set('b','345')
+// job.set('c','567')
+// console.log(job)
+// fileTo.mapWriteFile(fs,'./rbq.dat',job)
 
+let url2 ="G://菊姬plus/ftl/01-18"
+let filesDir = []
+function doFile(){
+    //导出压缩包的名和作者名的对于关系
+    fileTo.readAllFileName(fsPromise,url2).then((files)=>{
+        //剔除rar
+        for(let i of files){
+            if(!i.includes('.rar')){
+                filesDir.push(i)
+            }
+        }
+        let ps = []
+        filesDir.forEach((item)=>{
+            let childUrl = `${url2}/${item}`
+            let str = `${item} -> ${((fs.statSync(`${childUrl}.rar`).size)/1048576).toFixed(2)}MB`
+            ps.push(fileTo.readAllFileName(fsPromise,childUrl,str))
+            //console.log(fs.statSync(childUrl))
+        })
+        return Promise.all(ps)
+    })
+    // .then((data)=>{
+    //     fileTo.mapWriteFile(fs,'./rbq.dat',data)
+    // })
+}
+doFile()
+console.log()
+// .forEach((item)=>{
+//     fileTo.readAllFileName(fsPromise,`${url2}/${item}`).then((data)=>{
+//         console.log(data)
+//     })
+// })
+
+// rename 实现剪切
+// fs.renameSync(`${url2}/gRc01$froD11Ge6Qds23Tap2/[アルセノテリス (Rebis)]`,`${url2}/[アルセノテリス (Rebis)]`)
+
+let authorArr = []
