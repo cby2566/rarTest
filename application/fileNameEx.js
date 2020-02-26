@@ -136,14 +136,17 @@ console.log('write')
 // console.log(job)
 // fileTo.mapWriteFile(fs,'./rbq.dat',job)
 
-let url2 ="G://菊姬plus/ftl/01-18"
-let filesDir = []
+let url2 ="G:/菊姬plus/ftl/01-18"
+let filesDir = []; //gRc01$froD11Ge6Qdr22Tap1
+let authorArr = [];//含gRc01$froD11Ge6Qdr22Tap1的绝对路径
+let over = []; //含作者绝对路径
+let author2 = []//作者名
 function doFile(){
     //导出压缩包的名和作者名的对于关系
     fileTo.readAllFileName(fsPromise,url2).then((files)=>{
         //剔除rar
         for(let i of files){
-            if(!i.includes('.rar')){
+            if(!i.includes('.rar')&&!i.includes('[')){
                 filesDir.push(i)
             }
         }
@@ -152,16 +155,63 @@ function doFile(){
             let childUrl = `${url2}/${item}`
             let str = `${item} -> ${((fs.statSync(`${childUrl}.rar`).size)/1048576).toFixed(2)}MB`
             ps.push(fileTo.readAllFileName(fsPromise,childUrl,str))
-            //console.log(fs.statSync(childUrl))
+            authorArr.push(childUrl)
         })
         return Promise.all(ps)
     })
+    /**移动文件 start */
     // .then((data)=>{
-    //     fileTo.mapWriteFile(fs,'./rbq.dat',data)
+        
+    //     let p = []
+    //     for(let i = 0; i < data.length; i++){
+    //         // console.log(`${authorArr[i]}:${data[i][0]}`)
+    //         let text = `${authorArr[i]}/${data[i][0]}`
+    //         over.push(text)
+    //         author2.push(data[i][0])
+    //         p.push(fileTo.readAllFileName(fsPromise,text))//拼接用于写入的字符串
+    //     }
+    //     author2 = Array.from(new Set(author2))
+    //     return Promise.all(p)
     // })
+    // .then((data)=>{
+    //     //过滤掉【下载自用可删除此txt文件】.txt
+    //     //移动文件
+    //     data = data.map((i)=>{
+    //         return i.filter( item =>{return !item.includes('.txt')})
+    //     })
+    //     let ps = []
+
+    //     //在移动之前必须创建作者目录
+    //     // author2.forEach((item)=>{
+    //     //     fs.mkdirSync(`${url2}/${item}`)
+    //     // })
+        
+    //     data.map((item,index)=>{
+    //         let pxp = over[index].replace("/"+filesDir[index],"")
+    //         item.map((value,itx)=>{
+    //             console.log(`${over[index]}/${value}`)
+    //             console.log(`${pxp}/${value}`)
+    //             ps.push(fsPromise.rename(`${over[index]}/${value}`,`${pxp}/${value}`))
+    //         })
+    //     })
+    //     // fs.renameSync(`${authorArr[i]}/${data[i][0]}`,`${url2}/${data[i][0]}`)
+    //     return Promise.all(ps)
+    // })
+    // .then((data)=>{
+    //     console.log(data)
+    // }).catch((error)=>{
+    //     console.log('error',error)
+    // })
+    /**移动文件 end */
+
+    .then((data)=>{
+        console.log(data)
+        // 写入文件名组合
+        fileTo.mapWriteFile(fs,'./rbq.dat',data)
+    })
 }
 doFile()
-console.log()
+// fs.renameSync(`G:\\菊姬plus\\ftl\\01-18\\gRc01$froD11Ge6Qdr22Tap1\\[翁計画 (師走の翁)]\\[師走の翁] ##早期作品##`,`G:\\菊姬plus\\ftl\\01-18\\[翁計画 (師走の翁)]\\[師走の翁] ##早期作品##`)
 // .forEach((item)=>{
 //     fileTo.readAllFileName(fsPromise,`${url2}/${item}`).then((data)=>{
 //         console.log(data)
@@ -171,4 +221,3 @@ console.log()
 // rename 实现剪切
 // fs.renameSync(`${url2}/gRc01$froD11Ge6Qds23Tap2/[アルセノテリス (Rebis)]`,`${url2}/[アルセノテリス (Rebis)]`)
 
-let authorArr = []

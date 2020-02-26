@@ -4,7 +4,7 @@ const fs = require("fs");
 // 导出
 module.exports = '99989'
 module.exports = {
-    //封装重命名函数
+    //封装重命名函数,重命名文件后缀
     fileModify(fsp,dirName){
         let psArr = []
         let p = fsp.readdir(dirName)
@@ -20,8 +20,34 @@ module.exports = {
             return fsp.readdir(dirName)
         })
         return p
-    }
+    },
+    //写入文件函数
+    mapWriteFile(fsp,fileName,mapArr){
+        let fsStreamWrite = fsp.createWriteStream(fileName)
+        if(Array.isArray(mapArr)){
+            for(let i of mapArr){
+                fsStreamWrite.write(`${i[0]} -> ${i[1]}`+'\n')
+            }
+        }else{
+            for(let [k,v] of mapArr){
+                fsStreamWrite.write(`${k} -> ${v}`+'\n')
+                // console.log(k,v)
+            }
+        }
+        fsStreamWrite.end()
+    },
+    //按文件名读取文件夹，返回promise
+    readAllFileName(fsp,url,children){
+        return fsp.readdir(url)
+            .then((data)=>{
+                if(children) data.push(children);
+                return data;
+            }).catch((err)=>{
+                console.log('err:',err)
+            })
+    },
 }
+///////////////////
 function text(){
     //参考答案
     let url = 'G://菊姬plus/ftl/01-18'
