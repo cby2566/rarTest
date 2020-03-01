@@ -50,7 +50,7 @@ module.exports = {
 ///////////////////
 function text(){
     //参考答案
-    let url = 'G://菊姬plus/ftl/01-18'
+    let url = 'G://菊姬plus/ftl/01-15'
 let passWord = 'mayuyu123'
 // fileTo.fileModify(fsPromise,url).then((data)=>{
 //     console.log(data)
