@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require('path');
 // var path = 'G://菊姬zip'
 
 // 导出
@@ -45,6 +46,29 @@ module.exports = {
             }).catch((err)=>{
                 console.log('err:',err)
             })
+    },
+    //用于递归的读取文件
+    readAllFileName2(fsp,url,option,overArr){
+        async function acc(_url){
+           let arr = await fsp.readdir(_url,{withFileTypes:option});
+        //    let newArr = arr.filter((item)=>{
+        //        return item.isDirectory()
+        //    })
+        //    if(newArr.length == 0){
+        //         overArr.push(_url) 
+        //    }
+           for(let item of arr){
+                if(item.isDirectory()){
+                    let n = path.join(_url,item.name)
+                    console.log('dir:',n)
+                    await acc(n)
+                }else{
+                    let n = path.join(_url,item.name)
+                    console.log('dir:',n)
+                }
+           }
+        }
+        return acc(url)
     },
 }
 ///////////////////
