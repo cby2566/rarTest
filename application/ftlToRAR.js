@@ -48,14 +48,19 @@ module.exports = {
             })
     },
     //用于递归的读取文件
-    readAllFileName2(fsp,url,option,overArr){
+    readAllFileName2(fsp,url,option,overArr,callback){
         async function acc(_url){
            let arr = await fsp.readdir(_url,{withFileTypes:option}).catch((err)=>{console.log(err)});
            let newArr = arr.filter((item)=>{
                return item.isDirectory()
            })
            if(newArr.length == 0){
-                overArr.push(_url) 
+                // console.log(_url)
+                if(callback){
+                    overArr.push(callback(_url));
+                }else{
+                    overArr.push(_url) 
+                }
            }
 
            for(let item of arr){
