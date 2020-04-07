@@ -57,6 +57,7 @@ module.exports = {
            if(newArr.length == 0){
                 // console.log(_url)
                 if(callback){
+                    //如果有callback，则添加使用他处理过的数据
                     overArr.push(callback(_url));
                 }else{
                     overArr.push(_url) 
