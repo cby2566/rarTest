@@ -109,9 +109,7 @@ function readAll(){
 
 //
 // deleteFile()
-const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
-const mosaic = ['無修','无修']
-const regst = /[\[\]]/g; //替换
+
 // 用于规范化本子名的工具类 测试方法
 async function test(){
     //提取出文本文件里的名称
@@ -130,13 +128,7 @@ async function test(){
 //    console.log(test);
 //    console.log(path.parse('G:\\菊姬plus\\ftl\\01-13\\[abgrund (さいかわゆさ)]\\[abgrund (さいかわゆさ)] ABGRUND [空気系★汉化]\\01_01.jpg'))
 
-   let reg = /\[(.+?)\]/g;//中括号捕获 
-   let reg2 = /\((.+?)\)|【(.+?)】/g;//捕获小括号
-    //[4K[S版]掃圖組]
-    let sReg = /\[4K\[(.+?)\]掃圖組\]/;//中括号捕获,[4K[S版]掃圖組]
 
-    let reg_page = /\s\S話|第(.+?)話/;//捕获分卷信息
-    let reg_page2 = /-\s(\d)*/;//捕获页数
 
 
     // console.log(shortName(test.name));
@@ -146,7 +138,7 @@ async function test(){
             // console.log(bizNameArr[i],i)
             return
         }
-        console.log(longName(bizNameArr[i]));
+        console.log(fileTo.longName(bizNameArr[i]));
         // console.log(shortName(path.parse(bizNameArr[i]).name))
         // shortName(path.parse(bizNameArr[i]).name)
         // longName(bizNameArr[i])
@@ -154,94 +146,9 @@ async function test(){
         
     }
     
-    //短url的处理
-    function shortName(oldName,sol){
-        let arrReg = [sReg,reg,reg2];
-        let newName = oldName.toString();
 
-        let newObj = {
-            translatedGroup : '',
-            noMosaic : '',
-            authorName : '',
-            authorArr : [],
-            tagNameArr : []
-        }
-        
-        let flag = true;
 
-        for(let item of arrReg){
-            let partArr = newName.match(item)
-            if(partArr){
-                newObj.tagNameArr.push(...partArr)
-
-                flag = false;
-
-                partArr.forEach((i)=>{
-                    //剔除已捕获的标签
-                    newName = newName.replace(i,'').trim();
-                    //挑拣出汉化组
-                    pickChoose(i,newObj,'translatedGroup',translated)
-                    //挑拣出无修正
-                    pickChoose(i,newObj,'noMosaic',mosaic)
-
-                    function pickChoose( str, pickStr, index, regArr ){
-                        //挑拣方法； 源 挑拣后 条件
-                        for(let tItem of regArr){
-                            if(pickStr[index]) break;
-                            pickStr[index] = str.includes(tItem) ? i:'';
-                        }
-                    }
-                })
-            }
-            //挑拣出作者名
-            if(item === reg && partArr){
-
-                let authorName = partArr[0]
-                let tempName = partArr[0].match(reg2)
-                if(tempName){
-                    for(let item of tempName){
-                        authorName = authorName.replace(item,'');
-                    }
-                }else{
-                    tempName = []
-                }
-                
-                newObj.authorName = authorName.replace(regst,'').trim();
-                newObj.authorArr = [newObj.authorName,...tempName]
-            }
-        }
-        //当前目录捕获不到时
-        if(flag){
-            console.log(oldName)
-            return {
-                tagName:oldName,
-                success : false
-            }
-        }
-        //有上层传入的特殊tag
-        if(sol){
-            newObj.tagNameArr.push(sol)
-        }
-
-        return {
-            ...newObj,
-            originName : oldName,
-            bizName : newName,
-            success : true
-        }
-    }
-
-    //长url的处理
-    function longName(dirName){
-        //传入完整路径
-        let dirParse = path.parse(dirName)
-        let temp = shortName(dirParse.name)
-        if(temp.success === true){
-            return temp;
-        }else if(temp.success === false){
-            return shortName(dirParse.dir,temp.tagName)
-        }
-    }
+    
 
 //    console.log(test.name.replace(reg,''))
 //    console.log(test.name.match(sReg))
@@ -250,3 +157,5 @@ async function test(){
 
 }
 test()
+
+

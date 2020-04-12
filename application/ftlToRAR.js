@@ -2,6 +2,19 @@ const fs = require("fs");
 const path = require('path');
 // var path = 'G://菊姬zip'
 
+
+const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
+const mosaic = ['無修','无修']
+const regst = /[\[\]]/g; //替换
+
+let reg = /\[(.+?)\]/g;//中括号捕获 
+let reg2 = /\((.+?)\)|【(.+?)】/g;//捕获小括号
+ //[4K[S版]掃圖組]
+ let sReg = /\[4K\[(.+?)\]掃圖組\]/;//中括号捕获,[4K[S版]掃圖組]
+
+ let reg_page = /\s\S話|第(.+?)話/;//捕获分卷信息
+ let reg_page2 = /-\s(\d)*/;//捕获页数
+
 // 导出
 module.exports = '99989'
 module.exports = {
@@ -76,6 +89,93 @@ module.exports = {
            }
         }
         return acc(url)
+    },
+    //长url的处理
+    longName(dirName){
+        //传入完整路径
+        let dirParse = path.parse(dirName)
+        let temp = this.shortName(dirParse.name)
+        if(temp.success === true){
+            return {...temp,url:dirName};
+        }else if(temp.success === false){
+            return {...this.shortName(dirParse.dir,temp.tagName),url:dirName}
+        }
+    },
+    //短url的处理
+    shortName(oldName,sol){
+        let arrReg = [sReg,reg,reg2];
+        let newName = oldName.toString();
+
+        let newObj = {
+            translatedGroup : '',
+            noMosaic : '',
+            authorName : '',
+            authorArr : [],
+            tagNameArr : []
+        }
+        
+        let flag = true;
+
+        for(let item of arrReg){
+            let partArr = newName.match(item)
+            if(partArr){
+                newObj.tagNameArr.push(...partArr)
+
+                flag = false;
+
+                partArr.forEach((i)=>{
+                    //剔除已捕获的标签
+                    newName = newName.replace(i,'').trim();
+                    //挑拣出汉化组
+                    this.pickChoose(i,newObj,'translatedGroup',translated)
+                    //挑拣出无修正
+                    this.pickChoose(i,newObj,'noMosaic',mosaic)
+
+                })
+            }
+            //挑拣出作者名
+            if(item === reg && partArr){
+
+                let authorName = partArr[0]
+                let tempName = partArr[0].match(reg2)
+                if(tempName){
+                    for(let item of tempName){
+                        authorName = authorName.replace(item,'');
+                    }
+                }else{
+                    tempName = []
+                }
+                
+                newObj.authorName = authorName.replace(regst,'').trim();
+                newObj.authorArr = [newObj.authorName,...tempName]
+            }
+        }
+        //当前目录捕获不到时
+        if(flag){
+            console.log(oldName)
+            return {
+                tagName:oldName,
+                success : false
+            }
+        }
+        //有上层传入的特殊tag
+        if(sol){
+            newObj.tagNameArr.push(sol)
+        }
+
+        return {
+            ...newObj,
+            originName : oldName,
+            bizName : newName,
+            success : true
+        }
+    },
+    //挑拣方法； 源 挑拣后 条件
+    pickChoose( str, pickStr, index, regArr ){
+        for(let tItem of regArr){
+            if(pickStr[index]) break;
+            pickStr[index] = str.includes(tItem) ? str:'';
+        }
     },
 }
 ///////////////////
