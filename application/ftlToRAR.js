@@ -6,6 +6,7 @@ const path = require('path');
 const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
 const mosaic = ['無修','无修']
 const regst = /[\[\]]/g; //替换
+const regst2 = /[\(\)]/g; //替换小括号
 
 let reg = /\[(.+?)\]/g;//中括号捕获 
 let reg2 = /\((.+?)\)|【(.+?)】/g;//捕获小括号
@@ -94,15 +95,47 @@ module.exports = {
     longName(dirName){
         //传入完整路径
         let dirParse = path.parse(dirName)
-        let temp = this.shortName(dirParse.name)
-        if(temp.success === true){
-            return {...temp,url:dirName};
-        }else if(temp.success === false){
-            return {...this.shortName(dirParse.dir,temp.tagName),url:dirName}
+
+        //符号小数点会对path方法造成影响
+        if(dirParse.ext){
+            dirParse.name = dirParse.name + dirParse.ext
+        }
+
+        let arrTagName = [dirParse.name]
+        let authorObj = longNameFnc(dirParse)
+        console.log(authorObj,'1')
+
+        let temp = this.shortName(
+            authorObj.name,
+            arrTagName.length>1?arrTagName:[],
+            authorObj.authorDir
+            )
+        // if(temp){
+        return {...temp,url:dirName};
+        // }
+            //如果图片层级较深
+        function longNameFnc(url){
+            let parentName = url;
+            if(parentName.base.match(reg)){
+                // console.log('url',parentName.base)
+                return  {name : parentName.base, authorDir : parentAuthor(parentName)}
+                // return {...callback.shortName(parentName.name,temp.tagName),url:dirName} 
+            }else{
+                arrTagName.push(parentName.base)
+                return longNameFnc(path.parse(parentName.dir));
+            }
+        }
+        function parentAuthor(pathObj){
+            let flag7path = pathObj.base.match(reg);
+            if(flag7path.length == 1 && flag7path[0].length == pathObj.base.length){
+                return pathObj.base
+            }else{
+                return parentAuthor(path.parse(pathObj.dir))
+            }
         }
     },
     //短url的处理
-    shortName(oldName,sol){
+    shortName( oldName, sol, authorDir){
         let arrReg = [sReg,reg,reg2];
         let newName = oldName.toString();
 
@@ -136,8 +169,29 @@ module.exports = {
             //挑拣出作者名
             if(item === reg && partArr){
 
+                //从父级取出来的作者名
+                let isDirAuthorArr = [];
+                authorDir = authorDir.replace(regst,'').trim();
+                if(authorDir.match(reg2)){
+                    isDirAuthorArr.push(authorDir.replace(authorDir.match(reg2)[0],'').trim());
+                    isDirAuthorArr.push(...authorDir.match(reg2))
+                }else{
+                    isDirAuthorArr.push(authorDir)
+                }
+
+
+
                 let authorName = partArr[0]
-                let tempName = partArr[0].match(reg2)
+                //新方法匹配作者
+                for(let i = 0;i < partArr.length; i++){
+                    for(let j = 0;j < isDirAuthorArr.length; j++){
+                        if(partArr[i].includes[isDirAuthorArr[j]] || isDirAuthorArr[j].includes[partArr[i]]){
+                            authorName = partArr[i];
+                        }
+                    }
+                }
+
+                let tempName = authorName.match(reg2)
                 if(tempName){
                     for(let item of tempName){
                         authorName = authorName.replace(item,'');
@@ -146,13 +200,12 @@ module.exports = {
                     tempName = []
                 }
                 
-                newObj.authorName = authorName.replace(regst,'').trim();
+                newObj.authorName = authorDir
                 newObj.authorArr = [newObj.authorName,...tempName]
             }
         }
         //当前目录捕获不到时
         if(flag){
-            console.log(oldName)
             return {
                 tagName:oldName,
                 success : false

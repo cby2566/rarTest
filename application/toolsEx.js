@@ -126,27 +126,41 @@ async function test(){
 //    console.log(bizNameArr);
    let test = path.parse(bizNameArr[55])
 //    console.log(test);
-//    console.log(path.parse('G:\\菊姬plus\\ftl\\01-13\\[abgrund (さいかわゆさ)]\\[abgrund (さいかわゆさ)] ABGRUND [空気系★汉化]\\01_01.jpg'))
-
+//    console.log(path.parse('G:\\菊姬plus\\ftl\\01-18\\[サークル尾髭丹]\\[尾髭丹] 夏どぴゅっ ～いつでも排卵日着床200％女子たち～\\2_ブルマ\\ブルマ１'))
+//    console.log('----')
+//    console.log(fileTo.longName('G:\\菊姬plus\\ftl\\02-22\\[アシオミマサト]\\[アシオミマサト] クライムガールズ3.5 (COMIC 夢幻転生 2017年5月号)【瓜皮汉化】\\[アシオミマサト]クライムガールズ3.5(COMIC 夢幻転生 2017年5月号)【瓜皮汉化】'))
+//     return;
 
 
 
     // console.log(shortName(test.name));
+   let newobjarr = []
 
     for(let i = 0; i < bizNameArr.length; i++){
         if(!bizNameArr[i]){
             // console.log(bizNameArr[i],i)
-            return
+            break;
         }
-        console.log(fileTo.longName(bizNameArr[i]));
+        newobjarr.push(fileTo.longName(bizNameArr[i]))
+        // console.log(fileTo.longName(bizNameArr[i]));
         // console.log(shortName(path.parse(bizNameArr[i]).name))
         // shortName(path.parse(bizNameArr[i]).name)
         // longName(bizNameArr[i])
-
         
     }
+    let values = []
     
+    for(let items of newobjarr){
+        let {authorName, authorArr, bizName, originName, tagNameArr, noMosaic,translatedGroup, url} = items;
+        let valuesArr = [authorName, authorArr, bizName, originName, tagNameArr, noMosaic,translatedGroup, url];
+        valuesArr = valuesArr.map((item) => {
+            return item&&item.toString();
+        });
+        values.push(valuesArr)
+    }
+    let keys = ['author','author_arr','biz_name','origin_name','other','mosaic','translated_group','url']
 
+    intoSql(keys,values)
 
     
 
@@ -159,3 +173,34 @@ async function test(){
 test()
 
 
+///数据库
+const mysql = require('mysql');
+const config = require('../config');
+
+function intoSql(keys,values){
+    // 连接信息
+    const connection = mysql.createConnection(config);
+    // 建立连接
+    connection.connect(function (err) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return;
+        }
+        console.log('connected as id ' + connection.threadId);
+    });
+
+    // 批量插入
+    //执行sql   第二个参数要加"[]"
+    // let arr1 = ['author','biz_name','origin_name','other','url'].join()
+        
+    let userAddSql = `INSERT INTO src_table(${keys}) VALUES ? `;
+    let query = connection.query(userAddSql,[values],function (err, result) {
+        if(err){
+            console.log('[INSERT ERROR] - ',err.message);
+            return;
+        }
+    });
+    console.log(query)
+
+    connection.end();
+}

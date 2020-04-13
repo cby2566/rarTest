@@ -10,16 +10,16 @@ const config = require('../config');
 // const connection = mysql.createConnection(config);
 
 // let originUrl = "G:\\菊姬plus\\ftl\\01-13\\[かるま龍狼]"
-let originUrl = "G:\\菊姬plus\\ftl"
-// let originUrl = "G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj"
+// let originUrl = "G:\\菊姬plus\\ftl"
+let originUrl = "G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj"
 // let originUrl = "G:\\单行本\\2019"
 
 // let putUrl = "G:\\outx\\application\\dirname.rbq"
 
 
-// let putUrl = "G:\\outx\\application\\菊姬单行本.rbq"
+let putUrl = "G:\\outx\\application\\菊姬单行本.rbq"
 // let  putUrl = "G:\\outx\\application\\汉化区2019年部分单行本.rbq"
-let  putUrl = "G:\\outx\\application\\菊姬作者分类.rbq"
+// let  putUrl = "G:\\outx\\application\\菊姬作者分类.rbq"
 
 console.log(path.parse(originUrl))
 console.log(path.join(originUrl))
@@ -85,6 +85,7 @@ async function acc2(url){
     // }
     // fsStreamWrite.end()
 }
+
 function intoSql(key,values){
     // 连接信息
     const connection = mysql.createConnection(config);
@@ -112,15 +113,15 @@ function intoSql(key,values){
     });
     console.log(query.sql)
     // 执行查询
-    connection.query('SELECT * FROM src_table',
-        function (error, results, fields) {
-            if (error) {
-                throw error;
-            }
+    // connection.query('SELECT * FROM src_table',
+    //     function (error, results, fields) {
+    //         if (error) {
+    //             throw error;
+    //         }
 
-            // 打印查询结果
-            console.log('SELECT result is: ', results);
-        });
+    //         // 打印查询结果
+    //         console.log('SELECT result is: ', results);
+    //     });
     connection.end();
 }
 
