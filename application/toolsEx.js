@@ -113,7 +113,7 @@ function readAll(){
 // 用于规范化本子名的工具类 测试方法
 async function test(){
     //提取出文本文件里的名称
-   let dirName =  await fsPromise.readFile('G:\\outx\\application\\菊姬作者分类.rbq',{encoding:'utf8',flag:'r'})
+   let dirName =  await fsPromise.readFile('G:\\outx\\application\\菊姬作者分类前期2.rbq',{encoding:'utf8',flag:'r'})
 //    console.log(dirName)
    //提取出路径名
    let dirNameArr = dirName.split('\n');
@@ -160,9 +160,22 @@ async function test(){
     }
     let keys = ['author','author_arr','biz_name','origin_name','other','mosaic','translated_group','url']
 
-    intoSql(keys,values)
 
-    
+    // fileTo.insertSql(keys,values)
+
+    fileTo.intoSql(
+        'SELECT * FROM old_table',
+        (error, results, fields) => {
+            if (error) {
+                throw error;
+            }
+
+            // 打印查询结果
+            console.log('SELECT result is: ', results);
+            results = JSON.stringify(results);
+            results = JSON.parse(results);
+            console.log(results[1].id)
+    })
 
 //    console.log(test.name.replace(reg,''))
 //    console.log(test.name.match(sReg))
@@ -177,7 +190,7 @@ test()
 const mysql = require('mysql');
 const config = require('../config');
 
-function intoSql(keys,values){
+function intoSql(sql_key,fn){
     // 连接信息
     const connection = mysql.createConnection(config);
     // 建立连接
@@ -189,18 +202,8 @@ function intoSql(keys,values){
         console.log('connected as id ' + connection.threadId);
     });
 
-    // 批量插入
-    //执行sql   第二个参数要加"[]"
-    // let arr1 = ['author','biz_name','origin_name','other','url'].join()
-        
-    let userAddSql = `INSERT INTO src_table(${keys}) VALUES ? `;
-    let query = connection.query(userAddSql,[values],function (err, result) {
-        if(err){
-            console.log('[INSERT ERROR] - ',err.message);
-            return;
-        }
-    });
-    console.log(query)
+    // 执行查询
+    connection.query(sql_key,fn);
 
     connection.end();
 }

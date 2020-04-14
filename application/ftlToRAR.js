@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require('path');
 // var path = 'G://菊姬zip'
-
+const mysql = require('mysql');
+const config = require('../config');
 
 const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
 const mosaic = ['無修','无修']
@@ -103,7 +104,7 @@ module.exports = {
 
         let arrTagName = [dirParse.name]
         let authorObj = longNameFnc(dirParse)
-        console.log(authorObj,'1')
+        // console.log(authorObj,'1')
 
         let temp = this.shortName(
             authorObj.name,
@@ -127,10 +128,14 @@ module.exports = {
         }
         function parentAuthor(pathObj){
             let flag7path = pathObj.base.match(reg);
-            if(flag7path.length == 1 && flag7path[0].length == pathObj.base.length){
-                return pathObj.base
+            if(flag7path){
+                if(flag7path.length == 1 && flag7path[0].length == pathObj.base.length && !pathObj.base.includes('中文无修本')){
+                    return pathObj.base
+                }else{
+                    return parentAuthor(path.parse(pathObj.dir))
+                }
             }else{
-                return parentAuthor(path.parse(pathObj.dir))
+                return ''
             }
         }
     },
@@ -183,10 +188,12 @@ module.exports = {
 
                 let authorName = partArr[0]
                 //新方法匹配作者
-                for(let i = 0;i < partArr.length; i++){
-                    for(let j = 0;j < isDirAuthorArr.length; j++){
-                        if(partArr[i].includes[isDirAuthorArr[j]] || isDirAuthorArr[j].includes[partArr[i]]){
-                            authorName = partArr[i];
+                if(authorDir){
+                    for(let i = 0;i < partArr.length; i++){
+                        for(let j = 0;j < isDirAuthorArr.length; j++){
+                            if(partArr[i].includes[isDirAuthorArr[j]] || isDirAuthorArr[j].includes[partArr[i]]){
+                                authorName = partArr[i];
+                            }
                         }
                     }
                 }
@@ -200,7 +207,7 @@ module.exports = {
                     tempName = []
                 }
                 
-                newObj.authorName = authorDir
+                newObj.authorName = authorDir?authorDir:authorName.replace(regst,'').trim();
                 newObj.authorArr = [newObj.authorName,...tempName]
             }
         }
@@ -230,6 +237,50 @@ module.exports = {
             pickStr[index] = str.includes(tItem) ? str:'';
         }
     },
+    insertSql(keys,values){
+        // 连接信息
+        const connection = mysql.createConnection(config);
+        // 建立连接
+        connection.connect(function (err) {
+            if (err) {
+                console.error('error connecting: ' + err.stack);
+                return;
+            }
+            console.log('connected as id ' + connection.threadId);
+        });
+    
+        // 批量插入
+        //执行sql   第二个参数要加"[]"
+        // let arr1 = ['author','biz_name','origin_name','other','url'].join()
+            
+        let userAddSql = `INSERT INTO src_table(${keys}) VALUES ? `;
+        let query = connection.query(userAddSql,[values],function (err, result) {
+            if(err){
+                console.log('[INSERT ERROR] - ',err.message);
+                return;
+            }
+        });
+        console.log(query)
+    
+        connection.end();
+    },
+    intoSql(sql_key,fn){
+        // 连接信息
+        const connection = mysql.createConnection(config);
+        // 建立连接
+        connection.connect(function (err) {
+            if (err) {
+                console.error('error connecting: ' + err.stack);
+                return;
+            }
+            console.log('connected as id ' + connection.threadId);
+        });
+    
+        // 执行查询
+        connection.query(sql_key,fn);
+    
+        connection.end();
+    }
 }
 ///////////////////
 function text(){

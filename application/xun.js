@@ -11,15 +11,21 @@ const config = require('../config');
 
 // let originUrl = "G:\\菊姬plus\\ftl\\01-13\\[かるま龍狼]"
 // let originUrl = "G:\\菊姬plus\\ftl"
-let originUrl = "G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj"
+// let originUrl = "G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj"
 // let originUrl = "G:\\单行本\\2019"
 
 // let putUrl = "G:\\outx\\application\\dirname.rbq"
 
 
-let putUrl = "G:\\outx\\application\\菊姬单行本.rbq"
+// let putUrl = "G:\\outx\\application\\菊姬单行本.rbq"
 // let  putUrl = "G:\\outx\\application\\汉化区2019年部分单行本.rbq"
 // let  putUrl = "G:\\outx\\application\\菊姬作者分类.rbq"
+
+
+
+let originUrl = "G:\\菊姬zip"
+let  putUrl = "G:\\outx\\application\\菊姬作者分类前期2.rbq"
+
 
 console.log(path.parse(originUrl))
 console.log(path.join(originUrl))
