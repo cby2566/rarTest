@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "mysql": "^2.18.1"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.5.1"
   }
 }

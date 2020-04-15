@@ -164,17 +164,17 @@ async function test(){
     // fileTo.insertSql(keys,values)
 
     fileTo.intoSql(
-        'SELECT * FROM old_table',
+        `SELECT * from src_table WHERE mosaic <> ''`,
         (error, results, fields) => {
             if (error) {
                 throw error;
             }
 
             // 打印查询结果
-            console.log('SELECT result is: ', results);
+            // console.log('SELECT result is: ', results);
             results = JSON.stringify(results);
             results = JSON.parse(results);
-            console.log(results[1].id)
+            console.log(results)
     })
 
 //    console.log(test.name.replace(reg,''))
@@ -184,26 +184,3 @@ async function test(){
 
 }
 test()
-
-
-///数据库
-const mysql = require('mysql');
-const config = require('../config');
-
-function intoSql(sql_key,fn){
-    // 连接信息
-    const connection = mysql.createConnection(config);
-    // 建立连接
-    connection.connect(function (err) {
-        if (err) {
-            console.error('error connecting: ' + err.stack);
-            return;
-        }
-        console.log('connected as id ' + connection.threadId);
-    });
-
-    // 执行查询
-    connection.query(sql_key,fn);
-
-    connection.end();
-}

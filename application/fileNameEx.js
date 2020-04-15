@@ -2,7 +2,7 @@ const fs = require('fs');
 const fsPromise = fs.promises;
 // const exec = require('child_process').exec;
 const iconv = require('iconv-lite')
-
+// console.log(iconv)
 const fileTo = require('./ftlToRAR')
 
 function readAllFileName(url){
@@ -105,7 +105,7 @@ function texts() {
         console.log(arr7,arr7.length)
 
 
-        let fsStreamWrite = fs.createWriteStream('./rbq.rbq')
+        let fsStreamWrite = fs.createWriteStream('./rbq2.rbq')
         for(let i of allCloudUrl){
             for(let j of i){
                 fsStreamWrite.write(j+'\n')
