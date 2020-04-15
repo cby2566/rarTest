@@ -23,12 +23,14 @@ const config = require('../config');
 
 
 
-let originUrl = "G:\\菊姬zip"
-let  putUrl = "G:\\outx\\application\\菊姬作者分类前期2.rbq"
+// let originUrl = ["G:\\菊姬zip","G:\\菊姬","G:\\菊姬plus\\ftl"]
+// let  putUrl = "G:\\outx\\application\\菊姬作者分类全部.rbq"
 
+let originUrl = ["G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj","G:\\单行本\\2019"]
+let  putUrl = "G:\\outx\\application\\单行本啊啊啊.rbq"
 
-console.log(path.parse(originUrl))
-console.log(path.join(originUrl))
+// console.log(path.parse(originUrl))
+// console.log(path.join(originUrl))
 console.log('---')
 //从菊姬plus开始
 let reg = /\[(.+?)\]/g;//中括号捕获
@@ -52,27 +54,44 @@ async function acc(url){
         return setFileName(dirUrl)
     })
     // console.log(i)
-    console.log(123)
-    console.log(arr)
+    // console.log(arr)
     console.log(arr.length)
+    return arr;
     // intoSql('',arr)
     //关闭数据库
     // connection.end();
 
     //以下是写入
     // console.log(fsPromise.createWriteStream) //抛出异常
-    let fsStreamWrite = fs.createWriteStream(putUrl)
-    for(let j of arr){
-        if(Array.isArray(j)){
-            fsStreamWrite.write(`${j[0]} -> ${j[1]}`+'\n')
-        }else{
-            fsStreamWrite.write(`${j}`+'\n')
-        }
+    // let fsStreamWrite = fs.createWriteStream(putUrl,{flags :'r+'})
+    // for(let j of arr){
+    //     if(Array.isArray(j)){
+    //         fsStreamWrite.write(`${j[0]} -> ${j[1]}`+'\n')
+    //     }else{
+    //         fsStreamWrite.write(`${j}`+'\n')
+    //     }
         
-    }
+    // }
+    // fsStreamWrite.end()
+}
+/////多个写入
+async function arr_ex(){
+    var fsStreamWrite = fs.createWriteStream(putUrl)
+    
+        for(let i of originUrl){
+            for(let j of await acc(i)){
+                if(Array.isArray(j)){
+                    fsStreamWrite.write(`${j[0]} -> ${j[1]}`+'\n')
+                }else{
+                    fsStreamWrite.write(`${j}`+'\n')
+                }
+                
+            }
+        }
     fsStreamWrite.end()
 }
-acc(originUrl)
+arr_ex()
+
 
 //以下是为进数据库，做准备
 async function acc2(url){

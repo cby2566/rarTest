@@ -113,7 +113,7 @@ function readAll(){
 // 用于规范化本子名的工具类 测试方法
 async function test(){
     //提取出文本文件里的名称
-   let dirName =  await fsPromise.readFile('G:\\outx\\application\\菊姬作者分类前期2.rbq',{encoding:'utf8',flag:'r'})
+   let dirName =  await fsPromise.readFile('G:\\outx\\application\\单行本啊啊啊.rbq',{encoding:'utf8',flag:'r'})
 //    console.log(dirName)
    //提取出路径名
    let dirNameArr = dirName.split('\n');
@@ -161,8 +161,9 @@ async function test(){
     let keys = ['author','author_arr','biz_name','origin_name','other','mosaic','translated_group','url']
 
 
-    // fileTo.insertSql(keys,values)
-
+    fileTo.insertSql(keys,values,'dx_table')
+    return
+    //查询
     fileTo.intoSql(
         `SELECT * from src_table WHERE mosaic <> ''`,
         (error, results, fields) => {

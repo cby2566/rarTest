@@ -4,7 +4,7 @@ const path = require('path');
 const mysql = require('mysql');
 const config = require('../config');
 
-const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
+const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌','翻嵌']
 const mosaic = ['無修','无修']
 const regst = /[\[\]]/g; //替换
 const regst2 = /[\(\)]/g; //替换小括号
@@ -104,24 +104,31 @@ module.exports = {
 
         let arrTagName = [dirParse.name]
         let authorObj = longNameFnc(dirParse)
-        // console.log(authorObj,'1')
+        
 
         let temp = this.shortName(
             authorObj.name,
             arrTagName.length>1?arrTagName:[],
             authorObj.authorDir
             )
+
         // if(temp){
         return {...temp,url:dirName};
         // }
             //如果图片层级较深
         function longNameFnc(url){
+            
             let parentName = url;
             if(parentName.base.match(reg)){
                 // console.log('url',parentName.base)
                 return  {name : parentName.base, authorDir : parentAuthor(parentName)}
                 // return {...callback.shortName(parentName.name,temp.tagName),url:dirName} 
-            }else{
+            }else if(!parentName.base && !parentName.name && parentName.root == parentName.dir){
+                // console.log(dirParse)
+                arrTagName = []
+                return  {name : dirParse.name, authorDir : ''}
+            }
+            else{
                 arrTagName.push(parentName.base)
                 return longNameFnc(path.parse(parentName.dir));
             }
@@ -206,21 +213,30 @@ module.exports = {
                 }else{
                     tempName = []
                 }
-                
+                //当抓取的作者错误时 先虑掉汉化组
+                if(authorName.includes(newObj.translatedGroup) || newObj.translatedGroup.includes(authorName)){
+                    if(authorName && newObj.translatedGroup){
+                        authorName = ''
+                        newObj.authorName = ''
+                    }
+                }
+
                 newObj.authorName = authorDir?authorDir:authorName.replace(regst,'').trim();
                 newObj.authorArr = [newObj.authorName,...tempName]
             }
         }
         //当前目录捕获不到时
         if(flag){
-            return {
-                tagName:oldName,
-                success : false
-            }
+            // return {
+            //     tagName:oldName,
+            //     success : false
+            // }
         }
         //有上层传入的特殊tag
-        if(sol){
-            newObj.tagNameArr.push(sol)
+        if(sol && sol.length > 0){
+            newObj.tagNameArr.push(sol);
+            newName = newName +'$'+ sol.join();
+            oldName = oldName +'$'+ sol.join();
         }
 
         return {
@@ -237,7 +253,7 @@ module.exports = {
             pickStr[index] = str.includes(tItem) ? str:'';
         }
     },
-    insertSql(keys,values){
+    insertSql(keys,values,table){
         // 连接信息
         const connection = mysql.createConnection(config);
         // 建立连接
@@ -253,7 +269,7 @@ module.exports = {
         //执行sql   第二个参数要加"[]"
         // let arr1 = ['author','biz_name','origin_name','other','url'].join()
             
-        let userAddSql = `INSERT INTO src_table(${keys}) VALUES ? `;
+        let userAddSql = `INSERT INTO ${table}(${keys}) VALUES ? `;
         let query = connection.query(userAddSql,[values],function (err, result) {
             if(err){
                 console.log('[INSERT ERROR] - ',err.message);
