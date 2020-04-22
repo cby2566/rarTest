@@ -74,7 +74,23 @@ app.on('activate', () => {
 // },2000)
 //接收消息
 const ipcMain = require('electron').ipcMain;
+const fileTo = require('./util/ftlToRAR');
 ipcMain.on('ping', function(event, arg) {
   console.log(arg); // prints "ping"
-  win.webContents.send('main-process-messages', 'main-process-messages show')
+  // win.webContents.send('main-process-messages', 'main-process-messages show')
+  fileTo.intoSql(
+    `SELECT * from src_table WHERE mosaic <> ''`,
+    (error, results, fields) => {
+        if (error) {
+            throw error;
+        }
+
+        // 打印查询结果
+        // console.log('SELECT result is: ', results);
+        results = JSON.stringify(results);
+        results = JSON.parse(results);
+        console.log(results)
+        win.webContents.send('main-process-messages', results)
+  })
 });
+//electron-packager . fukaiitapp --out fukaiitapp --arch=x64 --overwrite
