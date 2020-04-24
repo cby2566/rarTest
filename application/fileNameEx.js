@@ -105,7 +105,7 @@ function texts() {
         console.log(arr7,arr7.length)
 
 
-        let fsStreamWrite = fs.createWriteStream('./rbq2.rbq')
+        let fsStreamWrite = fs.createWriteStream('./rbq3.rbq')
         for(let i of allCloudUrl){
             for(let j of i){
                 fsStreamWrite.write(j+'\n')
