@@ -6,27 +6,33 @@
     <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <title>Document</title>
+    <link rel="stylesheet" href="./style/css/index.css">
 </head>
 <body>
-    777
-    <h1>Hello World!</h1>
+    <!-- <h1>Hello World!</h1>
     We are using node <script>document.write(process.versions.node)</script>,
     Chrome <script>document.write(process.versions.chrome)</script>,
     and Electron <script>document.write(process.versions.electron)</script>.
-    <br>
-    <input type="button" value="按钮" onclick="fn1()">
+    <br> -->
+    <div class="view">
+      <span class="text-name"></span>
+    </div>
+    <div class="mune">
+      <input type="button" value="打开对话框" id="file_name2">
+    </div>
+    
 </body>
 <script>
-  require('electron-connect').client.create();
-  const electron = require('electron')
-  const ipcRenderer = electron.ipcRenderer
-  function fn1(){
-    console.log(123)
-    ipcRenderer.send('ping', 'yoooooooooooooooo!');
-  }
+  require('electron-connect').client.create();//用于热加载
+  // const electron = require('electron')
+  // const ipcRenderer = electron.ipcRenderer
+  // function fn1(){
+  //   ipcRenderer.send('ping', 'yoooooooooooooooo!');
+  // }
   
-  ipcRenderer.on('main-process-messages', function(event, message){
-      console.log(message)
-  })
+  // ipcRenderer.on('main-process-messages', function(event, message){
+  //     console.log(message)
+  // });
 </script>
+<script src="./component/modulComponent/index.js"></script>
 </html>

@@ -1,0 +1,17 @@
+
+html,body{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+.mune{
+    background-color: blueviolet;
+    height: 100%;
+    margin-right: 610px;
+}
+.view{
+    background-color: antiquewhite;
+    float: right;
+    width: 600px;
+    height: 100%;
+}

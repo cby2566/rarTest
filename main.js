@@ -1,7 +1,8 @@
 const { app, BrowserWindow } = require('electron')
 const ipcRenderer = require('electron').ipcRenderer;
-
+const dialog = require('electron').dialog;
 const client = require('electron-connect').client;
+const initFnc = require('./component/controllerComponent/index');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
@@ -33,8 +34,7 @@ function createWindow () {
     win = null
   })
   client.create(win);//热加载
-
-  
+  initFnc.xListener(win,dialog);//初始化监听
   
 }
 
@@ -64,33 +64,7 @@ app.on('activate', () => {
 // 也可以拆分成几个文件，然后用 require 导入。
 
 
+// initFnc.xListener(win);
 
-///发送消息
-// setTimeout(()=>{
-//   win.webContents.send('main-process-messages', 'main-process-messages show');
-// },800);
-// setInterval(()=>{
-//   win.webContents.send('main-process-messages', 'main-process-messages show')
-// },2000)
-//接收消息
-const ipcMain = require('electron').ipcMain;
-const fileTo = require('./util/ftlToRAR');
-ipcMain.on('ping', function(event, arg) {
-  console.log(arg); // prints "ping"
-  // win.webContents.send('main-process-messages', 'main-process-messages show')
-  fileTo.intoSql(
-    `SELECT * from src_table WHERE mosaic <> ''`,
-    (error, results, fields) => {
-        if (error) {
-            throw error;
-        }
 
-        // 打印查询结果
-        // console.log('SELECT result is: ', results);
-        results = JSON.stringify(results);
-        results = JSON.parse(results);
-        console.log(results)
-        win.webContents.send('main-process-messages', results)
-  })
-});
 //electron-packager . fukaiitapp --out fukaiitapp --arch=x64 --overwrite
