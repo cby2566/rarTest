@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require('electron')
 const ipcRenderer = require('electron').ipcRenderer;
 const dialog = require('electron').dialog;
-const client = require('electron-connect').client;
+const client = require('electron-connect').client;//热加载
 const initFnc = require('./component/controllerComponent/index');
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
@@ -21,7 +21,8 @@ function createWindow () {
   })
 
   // 加载index.html文件
-  win.loadFile('index.html')
+  // win.loadFile('app/index.html')
+  win.loadURL('http://localhost:8080/')
 
   // 打开开发者工具
   win.webContents.openDevTools()

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="./dist/build.js"></script>
+    <script>
+        // require('electron-connect').client.create();//用于热加载
+        var electron = require('electron')
+        var ipcRenderer = electron.ipcRenderer;
+    </script>
+</body>
+
+</html>

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "hot": ".\\node_modules\\.bin\\gulp watch:electron",
-    "build:dir": "electron-builder --dir"
+    "build:dir": "electron-builder --dir",
+    "build:dist": "electron-builder"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [

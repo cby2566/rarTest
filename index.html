@@ -14,13 +14,17 @@
     Chrome <script>document.write(process.versions.chrome)</script>,
     and Electron <script>document.write(process.versions.electron)</script>.
     <br> -->
-    <div class="view">
+
+    <!-- <div class="view">
       <span class="text-name"></span>
     </div>
     <div class="mune">
       <input type="button" value="打开对话框" id="file_name2">
-    </div>
-    
+      <br>
+      <a href="./app/index.html">to</a>
+    </div> -->
+    <div id="app"></div>
+    <script src="./app/dist/build.js"></script>
 </body>
 <script>
   require('electron-connect').client.create();//用于热加载
@@ -34,5 +38,5 @@
   //     console.log(message)
   // });
 </script>
-<script src="./component/modulComponent/index.js"></script>
+<!-- <script src="./component/modulComponent/index.js"></script> -->
 </html>
