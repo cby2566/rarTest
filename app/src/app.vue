@@ -1,54 +1,57 @@
 <template>
   <div class="apx">
-    <h1>{{ msg }}</h1>
-
-    <input type="text" v-model="msg">
-    <input type="button" value="bux" @click="func()">
+    <div class="right">
+      <buttonList />
+    </div>
+    <div class="left">
+      <contentList />
+    </div>
   </div>
 </template>
 
 <script>
-
-import getData from './util';
-
+import buttonList from './component/buttonList.vue';
+import contentList from './component/contentList.vue';
 export default {
   name: 'app',
+  components: {
+    buttonList,
+    contentList
+  },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js'
+      msg: 'Welcome'
     }
   },
   created() {
-    this.fetchData();
-    setTimeout(()=>{
-      ipcRenderer.on('fileDirName', function(event, message){
-        console.log(message)
-      });
-    })
+    // ipcRenderer.send('getFileDirName', 'openWindos');
+      // ipcRenderer.on('fileDirName', function(event, message){
+      //   console.log(message,'123')
+      // });
     //ipcRenderer.removeListener
   },
   mounted(){
     
   },
   methods: {
-     async fetchData() {
-      const data = await getData();
-      this.msg = data;
-    },
-    func(){
-      console.log(9);
-      ipcRenderer.send('getFileDirName', 'openWindos');
-    }
+      
   }
 }
 </script>
 
 <style lang="scss">
 .apx {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-
-  h1 {
-    color: green;
+  height: 100%;
+  .right{
+    float: left;
+    width: 200px;
+    // background: red;
+    height: 100%;
+  }
+  .left{
+    margin-left: 200px;
+    background: rosybrown;
+    height: 100%;
   }
 }
 </style>

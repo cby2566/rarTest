@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "element-ui": "^2.13.1",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -9,6 +10,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
     "css-loader": "^3.5.3",
+    "file-loader": "^6.0.0",
     "node-sass": "^4.14.0",
     "sass-loader": "^8.0.2",
     "vue-loader": "^15.9.1",

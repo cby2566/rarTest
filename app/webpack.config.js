@@ -48,6 +48,13 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
+                test: /\.(png|jpe?g|gif|eot|svg|ttf|woff|woff2)$/i,
+                loader: 'file-loader',
+                options: {
+                  name: '[path][name].[ext]?[hash]',
+                },
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: {

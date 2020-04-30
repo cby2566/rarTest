@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/css/index.css">
+</head>
+<body>
+    <div class="div1"></div>
+</body>
+<script>
+  const electron = require('electron');
+  const ipcRenderer = electron.ipcRenderer;
+  function fn1(){
+    ipcRenderer.send('ping', 'yoooooooooooooooo!');
+  }
+  ipcRenderer.on('main-process-messages', function(event, message){
+      console.log(message)
+      var div1 = document.querySelector('.div1');
+      div1.innerHTML = '';
+      if(Array.isArray(message)){
+        for(let i of message){
+          var cDiv = document.createElement('div');
+          cDiv.innerHTML = i;
+          div1.appendChild(cDiv);
+        }
+      }else{
+        div1.innerHTML = message;
+      }
+      
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+      // document.removeEventListener('DOMContentLoaded',arguments.callee, false);
+      fn1();
+  }, false);
+</script>
+<!-- <script src="./component/modulComponent/index.js"></script> -->
+</html>

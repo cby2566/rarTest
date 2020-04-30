@@ -2,19 +2,22 @@ const { app, BrowserWindow } = require('electron')
 const ipcRenderer = require('electron').ipcRenderer;
 const dialog = require('electron').dialog;
 const client = require('electron-connect').client;//热加载
-const initFnc = require('./component/controllerComponent/index');
-
+const initFnc = require('./application/component/controllerComponent/index');
+const Menu = require('electron').Menu;
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
 let win;
-let xxx = 909;
-console.log(99989)
 
 function createWindow () {
+
+  // 隐藏菜单栏
+  Menu.setApplicationMenu(null)
+
   // 创建浏览器窗口。
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: './favicon.ico',
     webPreferences: {
       nodeIntegration: true
     }
@@ -35,7 +38,7 @@ function createWindow () {
     win = null
   })
   client.create(win);//热加载
-  initFnc.xListener(win,dialog);//初始化监听
+  initFnc.xListener(win,dialog,BrowserWindow,__dirname);//初始化监听
   
 }
 
