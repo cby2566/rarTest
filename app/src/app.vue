@@ -3,8 +3,9 @@
     <div class="right">
       <buttonList />
     </div>
+    
     <div class="left">
-      <contentList />
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -29,6 +30,14 @@ export default {
       //   console.log(message,'123')
       // });
     //ipcRenderer.removeListener
+    console.log(fs);
+    var fsPromise = fs.promises;
+    var fileTo = require('../src/uilt/ftlToRAR');
+    let originUrl = `G:\\菊姬plus\\ftl\\04-30`
+    console.log(fileTo)
+    fileTo.readAllFileName(fsPromise,originUrl).then((data)=>{
+        console.log(data)
+    })
   },
   mounted(){
     

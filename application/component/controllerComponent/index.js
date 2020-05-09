@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require("fs");
 const fsPromise = fs.promises;
 const flieNameEx =require('./fileNameEx.js');
+const sqlTode =require('./sqlTode.js');
 
 let str = ""//处理值
 let localListWindow = null;
@@ -59,10 +60,28 @@ module.exports = {
             let originUrl = arg;
             //读取文件夹中ftc的全部文件名
             let originDirArr = await fileTo.readAllFileName(fsPromise,originUrl);
-            console.log(originDirArr);
+            console.log('重命名压缩文件'+originDirArr);
                 //修改ftl格式
             let m = await  fileTo.fileModify(fsPromise,originUrl);
             console.log(m);
+        });
+
+        //模糊查询
+        ipcMain.on('likeSelect',async function(event, arg) {
+            console.log(arg)
+            let result =  await sqlTode.likeSelect(arg['value'],arg['factor'])
+            win.webContents.send('likeSelectResult', result)
+        });
+        //批量删除
+        ipcMain.on('anyDelete',async function(event, arg) {
+            console.log(arg)
+            // sqlTode.anyDelete(arg)
+            let result =  await sqlTode.anyDelete(arg)
+        });
+        ipcMain.on('fsPromise',async function(event, arg) {
+            console.log(arg,'77777777')
+            console.log(fileTo)
+            win.webContents.send('fsPromise3', fileTo.fileModify)
         });
     }
 }

@@ -1,11 +1,12 @@
 <template>
   <div class="btnList">
-      <el-button @click="selectFile">选择文件夹</el-button>
+      <button @click="selectFile">选择文件夹</button>
+      <button @click="reset">重置</button>
       <span></span>
-      <el-button @click="reset">重置</el-button>
-      <span></span>
-      <el-button @click="openNew">提取链接</el-button>
-      <el-button @click="rename">重命名压缩包</el-button>
+      <button @click="openNew">提取链接</button>
+      <button @click="rename">重命名压缩包</button>
+      <router-link to="/foo">文件列表</router-link>
+      <router-link to="/bar">搜索</router-link>
   </div>
 </template>
 
@@ -36,7 +37,9 @@ export default {
     },
     rename(){
       event.$emit('getUrl',function(url){
+          console.log('7777777777777',url)
           ipcRenderer.send('rename', url);
+          
       })
     },
     reset(){

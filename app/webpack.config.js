@@ -2,21 +2,23 @@ var path = require('path');
 var webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
-    entry: ['babel-polyfill', './src/main.js'], // 项目的入口文件，webpack会从main.js开始，把所有依赖的js都加载打包
+    entry: ['babel-polyfill', './app/src/main.js'], // 项目的入口文件，webpack会从main.js开始，把所有依赖的js都加载打包
     output: {
         path: path.resolve(__dirname, './dist'), // 项目的打包文件路径
         publicPath: '/dist/', // 通过devServer访问路径
         filename: 'build.js' // 打包后的文件名
     },
     devServer: {
+        contentBase: path.resolve(__dirname, "./"),//需要指定特定目录的index
         historyApiFallback: true,
-        overlay: true
+        overlay: true,
     },
     resolve: {
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
         }
     },
+    mode: 'development',
     module: {
         rules: [
             {

@@ -1,6 +1,27 @@
 <template>
   <div class="cList">
-      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+    <div class="dirName">
+      {{dirUrl}}
+    </div>
+    <!-- <div v-for="(v,i) in dirList" :key="i">
+      {{v}}
+    </div> -->
+    <div>
+      删除所选目录
+      <input type="button" value="批量删除" @click="anyDelete">
+    </div>
+    <div>
+      <p>
+        待遍历文件夹:
+      </p>
+      <input type="button" value="添加目录" @click="addOriginUrl">
+      <input type="button" value="重置目录" @click="OriginUrlDelete">
+      <input type="button" value="遍历目录" @click="OriginUrlMap">
+      <div v-for="(v,i) in originUrlArr" :key="i">
+        {{v}}
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -19,21 +40,24 @@ export default {
           children: 'children',
           label: 'label'
         },
-        dirUrl:''
+        dirUrl:'',
+        dirList:[],
+        originUrlArr:[],
+        fileTo: require('../uilt/ftlToRAR')
       };
     },
   created() {
     ipcRenderer.on('fileDirName', (event, message) =>{
         console.log(message)
         this.dirUrl = message.dir
-        this.updataTree(message.dir,message.list);
+        this.dirList = message.list
     });
   },
   mounted(){
     event.$on('reset-list',this.reset)
     event.$on('getUrl',(ev)=>{
         if(!this.dirUrl) return;
-        ev(this.dirUrl[0]);
+        ev(this.dirUrl);
     })
   },
   destroyed(){
@@ -41,23 +65,54 @@ export default {
     event.$off('reset-list',this.reset)
   },
   methods: {
-      handleNodeClick(data) {
-        console.log(data);
-      },
-      updataTree(dir,list){
-        this.data = [];
-        let arr = []
-        for(let i = 0; i < list.length; i++){
-            arr.push({label:list[i]})
-        }
-        if(dir){
-            this.data.push({label:dir,children:arr}); 
-        }else{
-            this.data.sort();
-        }
-      },
       reset(){
-          this.updataTree('',[]);
+          this.dirUrl = ''
+          this.dirList= ''
+      },
+      anyDelete(){
+        if(this.dirList.length){
+          ipcRenderer.send('anyDelete', this.dirList);
+        }
+      },
+      addOriginUrl(){
+        if(this.dirUrl.length){
+            this.originUrlArr.push(...this.dirUrl)
+            this.dirUrl = ''
+        }
+      },
+      OriginUrlDelete(){
+        if(this.originUrlArr.length){
+          this.originUrlArr = [];
+          this.originUrlArr.sort()
+        }
+      },
+      async OriginUrlMap(){
+        var fileTo = this.fileTo;
+        if(!this.originUrlArr.length) return;
+        let values = []
+        for(let i of this.originUrlArr){
+            for(let j of await this.acc(i)){
+                let {authorName, authorArr, bizName, originName, tagNameArr, noMosaic,translatedGroup, url ,pages} = j;
+                let valuesArr = [authorName, authorArr, bizName, originName, tagNameArr, noMosaic,translatedGroup, url, pages];
+                valuesArr = valuesArr.map((item) => {
+                    return item&&item.toString();
+                });
+                values.push(valuesArr)
+            }
+        }
+        let keys = ['author','author_arr','biz_name','origin_name','other','mosaic','translated_group','url','pages']
+
+        fileTo.insertSql(keys,values,'src_table')
+      },
+      async acc(url){
+        var fsPromise = fs.promises;
+        var fileTo = this.fileTo;
+        let arr = []
+        let i = await fileTo.readAllFileName2(fsPromise,url,true,arr,function(dirUrl,list){
+            return {...fileTo.longName(dirUrl), pages : list.length}
+          })
+        console.log(arr.length)
+        return arr;
       }
   }
 }
@@ -67,5 +122,9 @@ export default {
 .cList{
     overflow: scroll;
     height: 100%;
+}
+.dirName{
+  font-size: 20px;
+  font-weight: 600;
 }
 </style>
