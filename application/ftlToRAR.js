@@ -4,7 +4,7 @@ const path = require('path');
 const mysql = require('mysql');
 const config = require('../config');
 
-const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
+const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌','翻嵌']
 const mosaic = ['無修','无修']
 const regst = /[\[\]]/g; //替换
 const regst2 = /[\(\)]/g; //替换小括号
@@ -207,7 +207,14 @@ module.exports = {
                 }else{
                     tempName = []
                 }
-                
+                //当抓取的作者错误时 先虑掉汉化组
+                if(authorName.includes(newObj.translatedGroup) || newObj.translatedGroup.includes(authorName)){
+                    if(authorName && newObj.translatedGroup){
+                        authorName = ''
+                        newObj.authorName = ''
+                    }
+                }
+
                 newObj.authorName = authorDir?authorDir:authorName.replace(regst,'').trim();
                 newObj.authorArr = [newObj.authorName,...tempName]
             }
