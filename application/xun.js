@@ -26,8 +26,11 @@ const config = require('../config');
 // let originUrl = ["G:\\菊姬zip","G:\\菊姬","G:\\菊姬plus\\ftl"]
 // let  putUrl = "G:\\outx\\application\\菊姬作者分类全部.rbq"
 
-let originUrl = ["G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj","G:\\单行本\\2019"]
-let  putUrl = "G:\\outx\\application\\单行本啊啊啊.rbq"
+let originUrl = ["G:\\菊姬plus\\ftl\\04-30"]
+let  putUrl = "G:\\outx\\application\\04-30.rbq"
+
+// let originUrl = ["G:\\BaiduNetdiskDownload\\2020新年快乐包\\jj","G:\\单行本\\2019"]
+// let  putUrl = "G:\\outx\\application\\单行本啊啊啊.rbq"
 
 // console.log(path.parse(originUrl))
 // console.log(path.join(originUrl))

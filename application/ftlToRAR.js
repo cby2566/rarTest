@@ -181,7 +181,7 @@ module.exports = {
             //挑拣出作者名
             if(item === reg && partArr){
 
-                //从父级取出来的作者名
+                //从父级取出来的作者名 
                 let isDirAuthorArr = [];
                 authorDir = authorDir.replace(regst,'').trim();
                 if(authorDir.match(reg2)){
@@ -194,6 +194,20 @@ module.exports = {
 
 
                 let authorName = partArr[0]
+
+                //假如第一个方括号是 汉化组,就把索引右移一位
+                for(let i = 0; i < partArr.length; i++){
+                    if(translated.some( item => partArr[i].includes(item))){
+                        authorName = partArr[ i + 1 ]
+                        break;
+                    }else if(i == 0){
+                        authorName = partArr[0]
+                        break;
+                    }else{
+
+                    }
+                }
+
                 //新方法匹配作者
                 if(authorDir){
                     for(let i = 0;i < partArr.length; i++){
