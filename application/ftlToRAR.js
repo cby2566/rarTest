@@ -1,10 +1,10 @@
-// const fs = require("fs");
-// const path = require('path');
-// // var path = 'G://菊姬zip'
-// const mysql = require('mysql');
+const fs = require("fs");
+const path = require('path');
+// var path = 'G://菊姬zip'
+const mysql = require('mysql');
 const config = require('../config');
 
-const translated = ['汉化','漢化','翻訳','翻译','翻譯','社','組','组','工房','机翻','重嵌','中文','Chinese','hinese']
+const translated = ['汉化','漢化','翻訳','社','組','组','工房','机翻','重嵌']
 const mosaic = ['無修','无修']
 const regst = /[\[\]]/g; //替换
 const regst2 = /[\(\)]/g; //替换小括号
@@ -28,7 +28,7 @@ module.exports = {
         .then((files)=>{
             files.forEach((filename)=>{
                 let oldPath = dirName + '/' + filename;
-                let newPath = dirName + '/' + filename.replace(/.ftc/, '.rar');
+                let newPath = dirName + '/' + filename.replace(/.K/, '.rar');
                 psArr.push(fsp.rename(oldPath,newPath))
             })
             return Promise.all(psArr)
@@ -74,7 +74,7 @@ module.exports = {
                 // console.log(_url)
                 if(callback){
                     //如果有callback，则添加使用他处理过的数据
-                    overArr.push(callback(_url,arr));
+                    overArr.push(callback(_url));
                 }else{
                     overArr.push(_url) 
                 }
@@ -105,18 +105,13 @@ module.exports = {
 
         let arrTagName = [dirParse.name]
         let authorObj = longNameFnc(dirParse)
-        //暂时处理方式 作者取不到的问题
-        if(dirName.search){
+        // console.log(authorObj,'1')
 
-        }
-
-        //
         let temp = this.shortName(
             authorObj.name,
             arrTagName.length>1?arrTagName:[],
             authorObj.authorDir
             )
-
         // if(temp){
         return {...temp,url:dirName};
         // }
@@ -124,12 +119,10 @@ module.exports = {
         function longNameFnc(url){
             let parentName = url;
             if(parentName.base.match(reg)){
+                // console.log('url',parentName.base)
                 return  {name : parentName.base, authorDir : parentAuthor(parentName)}
-            }else if(!parentName.base && !parentName.name && parentName.root == parentName.dir){
-                arrTagName = []
-                return  {name : dirParse.name, authorDir : ''}
-            }
-            else{
+                // return {...callback.shortName(parentName.name,temp.tagName),url:dirName} 
+            }else{
                 arrTagName.push(parentName.base)
                 return longNameFnc(path.parse(parentName.dir));
             }
@@ -182,7 +175,7 @@ module.exports = {
             //挑拣出作者名
             if(item === reg && partArr){
 
-                //从父级取出来的作者名 authorDir
+                //从父级取出来的作者名
                 let isDirAuthorArr = [];
                 authorDir = authorDir.replace(regst,'').trim();
                 if(authorDir.match(reg2)){
@@ -195,20 +188,6 @@ module.exports = {
 
 
                 let authorName = partArr[0]
-
-                //假如第一个方括号是 汉化组,就把索引右移一位
-                for(let i = 0; i < partArr.length; i++){
-                    if(translated.some( item => partArr[i].includes(item))){
-                        authorName = partArr[ i + 1 ] ? partArr[ i + 1 ] : ''
-                        break;
-                    }else if(i == 0){
-                        authorName = partArr[0]
-                        break;
-                    }else{
-
-                    }
-                }
-
                 //新方法匹配作者
                 if(authorDir){
                     for(let i = 0;i < partArr.length; i++){
@@ -219,9 +198,8 @@ module.exports = {
                         }
                     }
                 }
-  
-                let tempName = authorName.match(reg2)
 
+                let tempName = authorName.match(reg2)
                 if(tempName){
                     for(let item of tempName){
                         authorName = authorName.replace(item,'');
@@ -229,30 +207,21 @@ module.exports = {
                 }else{
                     tempName = []
                 }
-                //当抓取的作者错误时 先虑掉汉化组
-                if(authorName.includes(newObj.translatedGroup) || newObj.translatedGroup.includes(authorName)){
-                    if(authorName && newObj.translatedGroup){
-                        authorName = ''
-                        newObj.authorName = ''
-                    }
-                }
-
+                
                 newObj.authorName = authorDir?authorDir:authorName.replace(regst,'').trim();
                 newObj.authorArr = [newObj.authorName,...tempName]
             }
         }
         //当前目录捕获不到时
         if(flag){
-            // return {
-            //     tagName:oldName,
-            //     success : false
-            // }
+            return {
+                tagName:oldName,
+                success : false
+            }
         }
         //有上层传入的特殊tag
-        if(sol && sol.length > 0){
-            newObj.tagNameArr.push(sol);
-            newName = newName +'$'+ sol.join();
-            oldName = oldName +'$'+ sol.join();
+        if(sol){
+            newObj.tagNameArr.push(sol)
         }
 
         return {
@@ -269,7 +238,7 @@ module.exports = {
             pickStr[index] = str.includes(tItem) ? str:'';
         }
     },
-    insertSql(keys, values, table = 'src_table'){
+    insertSql(keys,values){
         // 连接信息
         const connection = mysql.createConnection(config);
         // 建立连接
@@ -285,7 +254,7 @@ module.exports = {
         //执行sql   第二个参数要加"[]"
         // let arr1 = ['author','biz_name','origin_name','other','url'].join()
             
-        let userAddSql = `INSERT INTO ${table}(${keys}) VALUES ? `;
+        let userAddSql = `INSERT INTO src_table(${keys}) VALUES ? `;
         let query = connection.query(userAddSql,[values],function (err, result) {
             if(err){
                 console.log('[INSERT ERROR] - ',err.message);
@@ -312,10 +281,58 @@ module.exports = {
         connection.query(sql_key,fn);
     
         connection.end();
-    },
-    ok(){
-        console.log('ok')
-        return 'say ok'
     }
 }
 ///////////////////
+function text(){
+    //参考答案
+    let url = 'G://菊姬plus/ftl/01-15'
+let passWord = 'mayuyu123'
+// fileTo.fileModify(fsPromise,url).then((data)=>{
+//     console.log(data)
+//     // for(let item of data){
+        
+//     // }
+//     let item = data[1]
+//     let outUrl = `${url}/${item.replace('.rar','')}/`
+//         let rarUrl = `${url}/${item}`
+//         unRAR(rarUrl,outUrl)
+// })
+
+
+function execCmd(cmdStr,next){
+    exec(cmdStr,function(err,stdout,stderr){
+        console.log('运行完成')
+    });
+}
+function unRAR(url,outUrl) {
+    // let dataPass = `start winrar e -y -p${passWord} ${url} ${outUrl}`
+    let dataPass = `start winrar x -y -p${passWord} ${url} ${outUrl}`
+    execCmd(dataPass)
+}
+
+const { spawn,exec  } = require('child_process');
+// const ls = spawn('start',['rar']);
+exec('rar x -pmayuyu123 ./la.rar -y  ',{encoding:'uft8'}, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`执行的错误: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${iconv.decode(stdout,'gb2312')}`);
+    // console.error(`stderr: ${stderr}`);
+  });
+  //vs控制台乱码解决 chcp 65001
+// ls.stdout.on('data', (data) => {
+//     console.log(`stdout: ${data}`);
+//   });
+  
+//   ls.stderr.on('data', (data) => {
+//     console.error(`stderr: ${data}`);
+//   });
+//   ls.on('close', (code) => {
+//     console.log(`子进程退出，退出码 ${code}`);
+//   });
+//   ls.on('error', (code) => {
+//     console.log(`报错 ${code}`);
+//   });
+}

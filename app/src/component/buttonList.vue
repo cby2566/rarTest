@@ -37,8 +37,8 @@ export default {
     },
     rename(){
       event.$emit('getUrl',function(url){
-          console.log('7777777777777',url)
-          ipcRenderer.send('rename', url);
+          console.log('重命名文件',url)
+          ipcRenderer.send('rename', url[0]);
           
       })
     },

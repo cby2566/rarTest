@@ -70,9 +70,9 @@ export default {
           this.dirList= ''
       },
       anyDelete(){
-        if(this.dirList.length){
-          ipcRenderer.send('anyDelete', this.dirList);
-        }
+        // if(this.dirList.length){
+        //   ipcRenderer.send('anyDelete', this.dirList);
+        // }
       },
       addOriginUrl(){
         if(this.dirUrl.length){
@@ -87,7 +87,6 @@ export default {
         }
       },
       async OriginUrlMap(){
-        var fileTo = this.fileTo;
         if(!this.originUrlArr.length) return;
         let values = []
         for(let i of this.originUrlArr){
@@ -98,15 +97,16 @@ export default {
                     return item&&item.toString();
                 });
                 values.push(valuesArr)
+                console.log(j)
             }
         }
         let keys = ['author','author_arr','biz_name','origin_name','other','mosaic','translated_group','url','pages']
 
-        fileTo.insertSql(keys,values,'src_table')
+        this.fileTo.insertSql(keys,values,'tb_tamp_other')
       },
       async acc(url){
-        var fsPromise = fs.promises;
-        var fileTo = this.fileTo;
+        let fsPromise = fs.promises;
+        let fileTo = this.fileTo;
         let arr = []
         let i = await fileTo.readAllFileName2(fsPromise,url,true,arr,function(dirUrl,list){
             return {...fileTo.longName(dirUrl), pages : list.length}

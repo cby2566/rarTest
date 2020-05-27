@@ -1,5 +1,5 @@
 const ipcMain = require('electron').ipcMain;
-const fileTo = require('../../ftlToRAR');
+const fileTo = require('../../../app/src/uilt/ftlToRAR');
 const path = require('path');
 const fs = require("fs");
 const fsPromise = fs.promises;
