@@ -78,7 +78,13 @@ async function start(){
 let textUrl = 'E:/work_work/jj/新年和无修80g'
 ///正式操作-》
 function texts() {
-    //用于解压飞猫网盘的那些链接，然后导出
+    //用于解压飞猫网盘的那些链接，然后导出(误)
+    /* 
+    ** 《提取度盘链接》
+    ** 需要先手动解压到src文件夹下
+    ** 读取以及解压好的txt文件中的度盘链接。
+    ** 导出的rbq文件是一排度盘链接
+    */
     var arr7 = []
     readAllFileName('../src').then((data)=>{
         let txtArr = data.filter((item)=>{
